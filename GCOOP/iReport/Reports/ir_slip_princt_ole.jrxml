@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_slip_princt_ole" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="369c31cd-c725-479f-bffa-33438aa27b29">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\GCOOP_ALL\\SLP\\GCOOP\\iReport\\Reports\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+mb.member_no
+,mbp.prename_desc+mb.memb_name+'   '+memb_surname as fu_name
+,mbg.membgroup_desc
+,sl.payinslip_no
+,sl.slip_date
+,sh.sharestk_amt
+,(select sum(sln.interest_accum)  from slslippayindet ssld left join lncontmaster sln on ssld.loancontract_no = sln.loancontract_no and ssld.payinslip_no = sl.payinslip_no) as interest_accum
+,(select sum(sd.item_payamt) from slslippayindet sd where sd.payinslip_no = sl.payinslip_no) as sum_pay
+from slslippayin sl
+left join mbmembmaster mb on sl.member_no = mb.member_no
+left join mbucfprename mbp on mb.prename_code = mbp.prename_code
+left join mbucfmembgroup mbg on mb.membgroup_code = mbg.membgroup_code
+left join shsharemaster sh on mb.member_no = sh.member_no
+where sl.coop_id ='051001'
+and sl.payinslip_no = 'SI62000036']]>
+	</queryString>
+	<field name="member_no" class="java.lang.String"/>
+	<field name="fu_name" class="java.lang.String"/>
+	<field name="membgroup_desc" class="java.lang.String"/>
+	<field name="payinslip_no" class="java.lang.String"/>
+	<field name="slip_date" class="java.sql.Timestamp"/>
+	<field name="sharestk_amt" class="java.math.BigDecimal"/>
+	<field name="interest_accum" class="java.math.BigDecimal"/>
+	<field name="sum_pay" class="java.math.BigDecimal"/>
+	<group name="slippayin">
+		<groupExpression><![CDATA[$F{payinslip_no}]]></groupExpression>
+		<groupHeader>
+			<band height="565">
+				<textField>
+					<reportElement uuid="d8ae6a03-4796-40aa-8c69-9349b24dd65a" x="57" y="89" width="151" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{membgroup_desc}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="8c652607-502d-4aa6-8043-93c2852e97ce" x="300" y="89" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy",new Locale("th","TH")).format($F{slip_date})]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="d2258d5a-520e-4e91-9e8e-210f893fad56" x="108" y="109" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{payinslip_no}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="14aa187c-a9e7-4865-a126-58b3e9fd68f2" x="57" y="129" width="151" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{fu_name}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="cadceb0c-c8f9-42ae-8661-4ac517a03296" x="300" y="109" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{member_no}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="9e4fced7-dd68-4819-a14a-e46a44ad272d" x="108" y="161" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{sharestk_amt}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="5429aae4-5af2-4717-b613-b50d35adf825" x="330" y="161" width="118" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{interest_accum}]]></textFieldExpression>
+				</textField>
+				<textField pattern="">
+					<reportElement uuid="fae41cdf-7089-4fb4-8f05-51ccd1cfef53" x="330" y="464" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{sum_pay}]]></textFieldExpression>
+				</textField>
+				<image>
+					<reportElement uuid="8ffc8fe4-79a9-4029-8f78-3050d2861ca8" x="344" y="498" width="67" height="43"/>
+					<imageExpression><![CDATA["C:\\GCOOP_ALL\\SLP\\GCOOP\\Saving\\Image\\signature1.jpg"]]></imageExpression>
+				</image>
+				<subreport>
+					<reportElement uuid="0753c7f9-1584-4759-835e-2f6b4675d5f6" x="68" y="199" width="448" height="246"/>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "ir_slip_princt_sub_ole.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
